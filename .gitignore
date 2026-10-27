@@ -3,3 +3,6 @@ node_modules/
 coverage/
 dist/
 .angular/
+.vscode/
+.idea/
+.DS_Store
