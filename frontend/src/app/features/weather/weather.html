@@ -1,0 +1,90 @@
+
+<main class="weather-page">
+  <header class="page-header">
+    <p class="eyebrow">WEATHER DASHBOARD</p>
+    <h1>Current Weather</h1>
+    <p>Check current conditions for any city.</p>
+  </header>
+
+  <form class="search-form" (ngSubmit)="searchWeather()">
+    <label for="city">City name</label>
+
+    <div class="search-row">
+      <input
+        id="city"
+        name="city"
+        type="text"
+        [(ngModel)]="city"
+        placeholder="Enter a city, e.g. Delhi"
+        maxlength="100"
+        required
+      />
+
+      <button type="submit" [disabled]="loading">
+        {{ loading ? 'Loading...' : 'Get weather' }}
+      </button>
+    </div>
+  </form>
+
+  @if (loading) {
+    <p class="status" role="status">Fetching weather data...</p>
+  }
+
+  @if (errorMessage) {
+    <div class="error" role="alert">
+      {{ errorMessage }}
+    </div>
+  }
+
+  @if (weather; as data) {
+    <section class="weather-card" aria-live="polite">
+      <div class="weather-card-header">
+        <div>
+          <h2>{{ data.location.name }}, {{ data.location.country }}</h2>
+          <p>{{ weatherDescription }}</p>
+        </div>
+
+        <span class="weather-icon" aria-hidden="true">🌤️</span>
+      </div>
+
+      <div class="temperature">
+        {{ data.current.temperature }}{{ data.units.temperature }}
+      </div>
+
+      <div class="weather-details">
+        <div class="detail">
+          <span>Feels like</span>
+          <strong>
+            {{ data.current.feelsLike ?? 'N/A' }}{{ data.current.feelsLike === null ? '' : '°C' }}
+          </strong>
+        </div>
+
+        <div class="detail">
+          <span>Humidity</span>
+          <strong>
+            {{ data.current.humidity ?? 'N/A' }}{{ data.current.humidity === null ? '' : '%' }}
+          </strong>
+        </div>
+
+        <div class="detail">
+          <span>Wind speed</span>
+          <strong>
+            {{ data.current.windSpeed ?? 'N/A' }}
+            {{ data.current.windSpeed === null ? '' : data.units.windSpeed }}
+          </strong>
+        </div>
+      </div>
+
+      <p class="updated">
+        Weather data time: {{ data.current.time }}
+      </p>
+    </section>
+  }
+
+  <footer>
+    Weather data provided by
+    <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">
+      Open-Meteo
+    </a>.
+  </footer>
+</main>

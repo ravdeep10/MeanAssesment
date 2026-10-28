@@ -1,1 +1,47 @@
-<p>dashboard works!</p>
+
+<section class="dashboard">
+  <header class="dashboard-heading">
+
+    @if (currentUser$ | async; as user) {
+      <h1>Welcome back, {{ user.username }}!</h1>
+    } @else {
+      <h1>Welcome to your dashboard</h1>
+    }
+
+    <p class="intro">
+      Check the weather, explore products, and manage your orders
+      from one place.
+    </p>
+  </header>
+
+  <section class="weather-section">
+    <div class="section-heading">
+      <div>
+        <h2>Weather overview</h2>
+        <p>Search for a city to see its current conditions.</p>
+      </div>
+
+      <a routerLink="/weather" class="text-link">
+        Open weather page →
+      </a>
+    </div>
+
+    <app-weather />
+  </section>
+
+  <section class="quick-links">
+    <a routerLink="/products" class="quick-card">
+      <span class="card-icon">▦</span>
+      <h3>Products</h3>
+      <p>Browse the catalogue and add or manage products.</p>
+      <span class="card-link">Explore products →</span>
+    </a>
+
+    <a routerLink="/orders" class="quick-card">
+      <span class="card-icon">🛒</span>
+      <h3>Orders</h3>
+      <p>Create an order from available products and manage it.</p>
+      <span class="card-link">Manage orders →</span>
+    </a>
+  </section>
+</section>

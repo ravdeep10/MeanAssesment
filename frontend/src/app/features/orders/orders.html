@@ -1,1 +1,273 @@
-<p>orders works!</p>
+
+<section class="orders-page">
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">ORDER MANAGEMENT</p>
+      <h1>Orders</h1>
+      <p class="subtitle">
+        Create orders from your catalogue and manage saved orders.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="secondary-button"
+      (click)="loadOrders()"
+      [disabled]="loadingOrders"
+    >
+      {{ loadingOrders ? 'Refreshing...' : 'Refresh orders' }}
+    </button>
+  </header>
+
+  @if (errorMessage) {
+    <div class="alert alert-error" role="alert">
+      {{ errorMessage }}
+    </div>
+  }
+
+  @if (successMessage) {
+    <div class="alert alert-success" role="status">
+      {{ successMessage }}
+    </div>
+  }
+
+  <section class="panel builder-panel">
+    <div class="section-heading">
+      <div>
+        <h2>{{ editingOrderId ? 'Edit order' : 'Create an order' }}</h2>
+        <p>Select one or more products for this order.</p>
+      </div>
+
+      @if (editingOrderId) {
+        <span class="editing-pill">Editing order</span>
+      }
+    </div>
+
+    @if (loadingProducts) {
+      <p class="empty-state">Loading products...</p>
+    } @else if (products.length === 0) {
+      <div class="empty-state">
+        <h3>No products available</h3>
+        <p>Add products to your catalogue before creating an order.</p>
+        <a routerLink="/products">Go to Products</a>
+      </div>
+    } @else {
+      <div class="selectable-products">
+        @for (product of products; track product._id) {
+          <label
+            class="selectable-product"
+            [class.selected]="isProductSelected(product._id)"
+          >
+            <input
+              type="checkbox"
+              [checked]="isProductSelected(product._id)"
+              (change)="toggleProduct(
+                product._id,
+                $any($event.target).checked
+              )"
+            />
+
+            <span class="product-info">
+              <strong>{{ product.name }}</strong>
+              <small>{{ product.description }}</small>
+            </span>
+
+            <span class="product-price">
+              {{ product.price | currency:'INR':'symbol':'1.2-2' }}
+            </span>
+          </label>
+        }
+      </div>
+
+      <div class="order-summary">
+        <div>
+          <span class="summary-label">Selected products</span>
+          <strong>{{ selectedProductIds.length }}</strong>
+        </div>
+
+        <div>
+          <span class="summary-label">Estimated total</span>
+          <strong>
+            {{ estimatedTotal | currency:'INR':'symbol':'1.2-2' }}
+          </strong>
+        </div>
+      </div>
+
+      <p class="summary-note">
+        This is an estimate. The backend calculates the final saved total.
+      </p>
+
+      <div class="form-actions">
+        <button
+          type="button"
+          class="primary-button"
+          (click)="saveOrder()"
+          [disabled]="submitting || selectedProductIds.length === 0"
+        >
+          {{
+            submitting
+              ? 'Saving...'
+              : editingOrderId
+                ? 'Save order changes'
+                : 'Create order'
+          }}
+        </button>
+
+        @if (editingOrderId) {
+          <button
+            type="button"
+            class="secondary-button"
+            (click)="cancelEdit()"
+            [disabled]="submitting"
+          >
+            Cancel edit
+          </button>
+        }
+      </div>
+    }
+  </section>
+
+  <section class="orders-section">
+    <div class="section-heading">
+      <div>
+        <h2>Your orders</h2>
+        <p>Only orders belonging to your account are shown.</p>
+      </div>
+
+      <span class="count-pill">{{ orders.length }} orders</span>
+    </div>
+
+    @if (loadingOrders && orders.length === 0) {
+      <div class="empty-state">Loading orders...</div>
+    } @else if (orders.length === 0) {
+      <div class="empty-state">
+        <h3>No orders yet</h3>
+        <p>Select products above to create your first order.</p>
+      </div>
+    } @else {
+      <div class="orders-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Products</th>
+              <th>Total</th>
+              <th>Created</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (order of orders; track order.orderId) {
+              <tr>
+                <td class="order-id">
+                  {{ order.orderId.slice(-8) }}
+                </td>
+
+                <td>{{ order.productIds.length }}</td>
+
+                <td class="amount">
+                  {{ order.totalAmount | currency:'INR':'symbol':'1.2-2' }}
+                </td>
+
+                <td>
+                  {{
+                    order.createdAt
+                      ? (order.createdAt | date:'mediumDate')
+                      : '—'
+                  }}
+                </td>
+
+                <td>
+                  <div class="table-actions">
+                    <button
+                      type="button"
+                      class="secondary-button"
+                      (click)="viewOrder(order)"
+                    >
+                      View
+                    </button>
+
+                    <button
+                      type="button"
+                      class="secondary-button"
+                      (click)="editOrder(order)"
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      type="button"
+                      class="danger-button"
+                      (click)="deleteOrder(order)"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+  @if (selectedOrder) {
+    <section class="panel order-details">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">ORDER DETAILS</p>
+          <h2>Order {{ selectedOrder.orderId }}</h2>
+        </div>
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="selectedOrder = null"
+        >
+          Close
+        </button>
+      </div>
+
+      <dl class="details-list">
+        <div>
+          <dt>Order ID</dt>
+          <dd>{{ selectedOrder.orderId }}</dd>
+        </div>
+
+        <div>
+          <dt>Products</dt>
+          <dd>{{ selectedOrder.productIds.length }}</dd>
+        </div>
+
+        <div>
+          <dt>Product IDs</dt>
+          <dd class="id-list">
+            @for (id of selectedOrder.productIds; track id) {
+              <span>{{ id }}</span>
+            }
+          </dd>
+        </div>
+
+        <div>
+          <dt>Saved total</dt>
+          <dd class="amount">
+            {{ selectedOrder.totalAmount | currency:'INR':'symbol':'1.2-2' }}
+          </dd>
+        </div>
+
+        <div>
+          <dt>Created</dt>
+          <dd>
+            {{
+              selectedOrder.createdAt
+                ? (selectedOrder.createdAt | date:'medium')
+                : '—'
+            }}
+          </dd>
+        </div>
+      </dl>
+    </section>
+  }
+</section>

@@ -1,0 +1,67 @@
+
+<div class="app-shell">
+  <header class="topbar">
+    <a class="brand" routerLink="/dashboard">
+      <span class="brand-mark">MA</span>
+      <span>MEAN Assessment</span>
+    </a>
+
+    <nav class="main-nav" aria-label="Main navigation">
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        ariaCurrentWhenActive="page"
+      >
+        Dashboard
+      </a>
+
+      <a
+        routerLink="/weather"
+        routerLinkActive="active"
+        ariaCurrentWhenActive="page"
+      >
+        Weather
+      </a>
+
+      <a
+        routerLink="/products"
+        routerLinkActive="active"
+        ariaCurrentWhenActive="page"
+      >
+        Products
+      </a>
+
+      <a
+        routerLink="/orders"
+        routerLinkActive="active"
+        ariaCurrentWhenActive="page"
+      >
+        Orders
+      </a>
+    </nav>
+
+    <div class="user-area">
+      @if (currentUser$ | async; as user) {
+        <span class="welcome-user">
+          Hi, <strong>{{ user.username }}</strong>
+        </span>
+      }
+
+      <button
+        type="button"
+        class="logout-button"
+        (click)="logout()"
+      >
+        Logout
+      </button>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <router-outlet />
+  </main>
+
+  <footer class="app-footer">
+    MEAN Assessment · Angular and Node.js
+  </footer>
+</div>

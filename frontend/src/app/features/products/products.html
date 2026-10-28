@@ -1,1 +1,239 @@
-<p>products works!</p>
+
+<section class="products-page">
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">CATALOGUE MANAGEMENT</p>
+      <h1>Products</h1>
+      <p class="subtitle">
+        Browse, add, update, and manage your product catalogue.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="secondary-button"
+      (click)="loadProducts()"
+      [disabled]="loading"
+    >
+      {{ loading ? 'Refreshing...' : 'Refresh' }}
+    </button>
+  </header>
+
+  @if (errorMessage) {
+    <div class="alert alert-error" role="alert">
+      {{ errorMessage }}
+    </div>
+  }
+
+  @if (successMessage) {
+    <div class="alert alert-success" role="status">
+      {{ successMessage }}
+    </div>
+  }
+
+  <div class="products-layout">
+    <section class="panel product-form-panel">
+      <h2>{{ editingProductId ? 'Edit product' : 'Add a product' }}</h2>
+      <p class="panel-subtitle">
+        Enter the product information below.
+      </p>
+
+      <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+        <div class="form-field">
+          <label for="name">Product name</label>
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            maxlength="150"
+            placeholder="e.g. Laptop"
+          />
+
+          @if (
+            productForm.controls.name.touched &&
+            productForm.controls.name.hasError('required')
+          ) {
+            <small class="field-error">Product name is required.</small>
+          }
+        </div>
+
+        <div class="form-field">
+          <label for="price">Price</label>
+          <input
+            id="price"
+            type="number"
+            formControlName="price"
+            min="0"
+            step="0.01"
+            placeholder="e.g. 75000"
+          />
+
+          @if (
+            productForm.controls.price.touched &&
+            productForm.controls.price.hasError('min')
+          ) {
+            <small class="field-error">
+              Price cannot be negative.
+            </small>
+          }
+        </div>
+
+        <div class="form-field">
+          <label for="description">Description</label>
+          <textarea
+            id="description"
+            formControlName="description"
+            rows="4"
+            maxlength="2000"
+            placeholder="Describe the product..."
+          ></textarea>
+
+          @if (
+            productForm.controls.description.touched &&
+            productForm.controls.description.hasError('required')
+          ) {
+            <small class="field-error">
+              Description is required.
+            </small>
+          }
+        </div>
+
+        <div class="form-actions">
+          <button
+            type="submit"
+            class="primary-button"
+            [disabled]="submitting || productForm.invalid"
+          >
+            {{
+              submitting
+                ? 'Saving...'
+                : editingProductId
+                  ? 'Save changes'
+                  : 'Add product'
+            }}
+          </button>
+
+          @if (editingProductId) {
+            <button
+              type="button"
+              class="secondary-button"
+              (click)="cancelEdit()"
+              [disabled]="submitting"
+            >
+              Cancel
+            </button>
+          }
+        </div>
+      </form>
+    </section>
+
+    <section class="catalogue">
+      <div class="catalogue-heading">
+        <h2>Product catalogue</h2>
+        <span class="count-pill">{{ products.length }} products</span>
+      </div>
+
+      @if (loading && products.length === 0) {
+        <div class="empty-state">Loading products...</div>
+      } @else if (products.length === 0) {
+        <div class="empty-state">
+          <h3>No products yet</h3>
+          <p>Add your first product using the form.</p>
+        </div>
+      } @else {
+        <div class="product-grid">
+          @for (product of products; track product._id) {
+            <article class="product-card">
+              <div class="product-card-top">
+                <span class="product-icon">▦</span>
+                <span class="product-id">
+                  {{ product._id.slice(-6) }}
+                </span>
+              </div>
+
+              <h3>{{ product.name }}</h3>
+
+              <p class="product-description">
+                {{ product.description }}
+              </p>
+
+              <p class="product-price">
+                {{ product.price | currency:'INR':'symbol':'1.2-2' }}
+              </p>
+
+              @if (product.createdAt) {
+                <p class="product-date">
+                  Added {{ product.createdAt | date:'mediumDate' }}
+                </p>
+              }
+
+              <div class="card-actions">
+                <button
+                  type="button"
+                  class="secondary-button"
+                  (click)="viewProduct(product)"
+                >
+                  View
+                </button>
+
+                <button
+                  type="button"
+                  class="secondary-button"
+                  (click)="editProduct(product)"
+                >
+                  Edit
+                </button>
+
+                <button
+                  type="button"
+                  class="danger-button"
+                  (click)="deleteProduct(product)"
+                >
+                  Delete
+                </button>
+              </div>
+            </article>
+          }
+        </div>
+      }
+    </section>
+  </div>
+
+  @if (selectedProduct) {
+    <section class="panel details-panel">
+      <div class="details-heading">
+        <div>
+          <p class="eyebrow">PRODUCT DETAILS</p>
+          <h2>{{ selectedProduct.name }}</h2>
+        </div>
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="selectedProduct = null"
+        >
+          Close
+        </button>
+      </div>
+
+      <dl class="details-list">
+        <div>
+          <dt>Product ID</dt>
+          <dd>{{ selectedProduct._id }}</dd>
+        </div>
+
+        <div>
+          <dt>Price</dt>
+          <dd>
+            {{ selectedProduct.price | currency:'INR':'symbol':'1.2-2' }}
+          </dd>
+        </div>
+
+        <div>
+          <dt>Description</dt>
+          <dd>{{ selectedProduct.description }}</dd>
+        </div>
+      </dl>
+    </section>
+  }
+</section>
