@@ -1,6 +1,6 @@
 
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/mysql');
+const { sequelize } = require('../config/db');
 
 const User = sequelize.define(
   'User',
@@ -20,7 +20,7 @@ const User = sequelize.define(
     password: {
       type: DataTypes.STRING(255),
       allowNull: false,
-    },
+    }
   },
   {
     tableName: 'USERS',
