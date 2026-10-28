@@ -1,0 +1,70 @@
+
+<main class="auth-page">
+  <section class="auth-card">
+    <div class="brand">
+      <span class="brand-mark">MA</span>
+      <span>MEAN Assessment</span>
+    </div>
+
+    <h1>Welcome back</h1>
+    <p class="subtitle">Sign in to access your dashboard.</p>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-field">
+        <label for="username">Username</label>
+        <input
+          id="username"
+          type="text"
+          formControlName="username"
+          placeholder="Enter your username"
+          autocomplete="username"
+          maxlength="30"
+        />
+
+        @if (
+          loginForm.controls.username.touched &&
+          loginForm.controls.username.hasError('required')
+        ) {
+          <small class="field-error">Username is required.</small>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="Enter your password"
+          autocomplete="current-password"
+          maxlength="72"
+        />
+
+        @if (
+          loginForm.controls.password.touched &&
+          loginForm.controls.password.hasError('required')
+        ) {
+          <small class="field-error">Password is required.</small>
+        }
+      </div>
+
+      @if (errorMessage) {
+        <div class="error-banner" role="alert">
+          {{ errorMessage }}
+        </div>
+      }
+
+      <button
+        type="submit"
+        [disabled]="loading || loginForm.invalid"
+      >
+        {{ loading ? 'Signing in...' : 'Sign in' }}
+      </button>
+    </form>
+
+    <p class="auth-footer">
+      Don't have an account?
+      <a routerLink="/register">Create an account</a>
+    </p>
+  </section>
+</main>
