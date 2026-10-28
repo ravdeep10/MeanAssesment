@@ -207,9 +207,29 @@ const deleteOrder = async (req, res) => {
   }
 };
 
+async function getOrders(req, res) {
+  try {
+    const orders = await Order.find({
+      userId: req.user.userId,
+    }).sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      count: orders.length,
+      orders,
+    });
+  } catch (error) {
+    console.error('Get orders error:', error);
+
+    return res.status(500).json({
+      message: 'Failed to retrieve orders.',
+    });
+  }
+}
+
 module.exports = {
   createOrder,
   getOrderById,
   updateOrder,
   deleteOrder,
+  getOrders
 };
