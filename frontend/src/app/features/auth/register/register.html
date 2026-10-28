@@ -1,1 +1,134 @@
-<p>register works!</p>
+
+<main class="auth-page">
+  <section class="auth-card">
+    <div class="brand">
+      <span class="brand-mark">MA</span>
+      <span>MEAN Assessment</span>
+    </div>
+
+    <h1>Create your account</h1>
+    <p class="subtitle">
+      Register to access weather, products, and orders.
+    </p>
+
+    <form
+      [formGroup]="registerForm"
+      (ngSubmit)="onSubmit()"
+    >
+      <div class="form-field">
+        <label for="username">Username</label>
+        <input
+          id="username"
+          type="text"
+          formControlName="username"
+          placeholder="Choose a username"
+          autocomplete="username"
+          maxlength="30"
+          required
+        />
+
+        @if (
+          registerForm.controls.username.touched &&
+          registerForm.controls.username.hasError('required')
+        ) {
+          <small class="field-error">Username is required.</small>
+        }
+
+        @if (
+          registerForm.controls.username.touched &&
+          registerForm.controls.username.hasError('minlength')
+        ) {
+          <small class="field-error">
+            Username must contain at least 3 characters.
+          </small>
+        }
+
+        @if (
+          registerForm.controls.username.touched &&
+          registerForm.controls.username.hasError('pattern')
+        ) {
+          <small class="field-error">
+            Use only letters, numbers, and underscores.
+          </small>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="Create a password"
+          autocomplete="new-password"
+          maxlength="72"
+          required
+        />
+
+        @if (
+          registerForm.controls.password.touched &&
+          registerForm.controls.password.hasError('required')
+        ) {
+          <small class="field-error">Password is required.</small>
+        }
+
+        @if (
+          registerForm.controls.password.touched &&
+          registerForm.controls.password.hasError('minlength')
+        ) {
+          <small class="field-error">
+            Password must contain at least 8 characters.
+          </small>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="confirmPassword">Confirm password</label>
+        <input
+          id="confirmPassword"
+          type="password"
+          formControlName="confirmPassword"
+          placeholder="Enter your password again"
+          autocomplete="new-password"
+          required
+        />
+
+        @if (
+          registerForm.controls.confirmPassword.touched &&
+          registerForm.controls.confirmPassword.hasError('required')
+        ) {
+          <small class="field-error">
+            Please confirm your password.
+          </small>
+        }
+
+        @if (
+          registerForm.controls.confirmPassword.touched &&
+          registerForm.hasError('passwordsMismatch')
+        ) {
+          <small class="field-error">
+            Passwords do not match.
+          </small>
+        }
+      </div>
+
+      @if (errorMessage) {
+        <div class="error-banner" role="alert">
+          {{ errorMessage }}
+        </div>
+      }
+
+      <button
+        type="submit"
+        [disabled]="loading || registerForm.invalid"
+      >
+        {{ loading ? 'Creating account...' : 'Create account' }}
+      </button>
+    </form>
+
+    <p class="auth-footer">
+      Already have an account?
+      <a routerLink="/login">Sign in</a>
+    </p>
+  </section>
+</main>

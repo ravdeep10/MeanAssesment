@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Auth } from '../../../core/services/auth';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-  imports: [FormsModule, ReactiveFormsModule],
+  imports: [FormsModule, ReactiveFormsModule, RouterLink],
   selector: 'app-login',
   styleUrl: './login.scss',
   templateUrl: './login.html',
@@ -19,6 +19,14 @@ private readonly fb = inject(FormBuilder);
 
   loading = false;
   errorMessage = '';
+  successMessage = '';
+
+  ngOnInit(): void {
+    this.successMessage =
+      this.route.snapshot.queryParamMap.get('registered') === '1'
+        ? 'Registration successful! You can now sign in.'
+        : '';
+  }
 
   readonly loginForm = this.fb.nonNullable.group({
     username: ['', [Validators.required, Validators.maxLength(30)]],

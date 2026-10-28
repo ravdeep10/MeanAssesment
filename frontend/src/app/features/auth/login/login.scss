@@ -130,6 +130,7 @@ button:disabled {
   color: #1d4ed8;
   font-weight: 600;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .auth-footer a:hover {
@@ -140,4 +141,15 @@ button:disabled {
   .auth-card {
     padding: 24px;
   }
+}
+
+.success-banner {
+  margin-bottom: 18px;
+  padding: 12px;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  background: #f0fdf4;
+  color: #166534;
+  font-size: 14px;
+  line-height: 1.5;
 }
