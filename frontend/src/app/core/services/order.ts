@@ -3,6 +3,7 @@ import { Service } from '@angular/core';
 import { inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface Order {
   _id: string;
@@ -30,7 +31,7 @@ export interface OrderPayload {
 @Service()
 export class OrderService {
 private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:3000/api/orders';
+  private readonly apiUrl = `${environment.serverUrl}/orders`;
 
   getOrders(): Observable<OrderListResponse> {
     return this.http.get<OrderListResponse>(this.apiUrl);

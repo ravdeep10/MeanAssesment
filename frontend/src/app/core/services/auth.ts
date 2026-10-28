@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface AuthUser {
   id: number;
@@ -22,7 +23,7 @@ export interface RegisterResponse {
 export class Auth {
   private readonly http = inject(HttpClient);
 
-  private readonly apiUrl = 'http://localhost:3000/api/auth';
+  private readonly apiUrl = `${environment.serverUrl}/auth`;
   private readonly tokenKey = 'user_token';
   private readonly userKey = 'user';
 

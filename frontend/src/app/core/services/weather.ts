@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface WeatherResponse {
   location: {
@@ -27,8 +28,7 @@ export interface WeatherResponse {
 export class Weather {
     private readonly http = inject(HttpClient);
 
-  private readonly apiUrl =
-    'http://localhost:3000/api/weather';
+  private readonly apiUrl = `${environment.serverUrl}/weather`;
 
   getWeather(city: string): Observable<WeatherResponse> {
     const params = new HttpParams().set('city', city);

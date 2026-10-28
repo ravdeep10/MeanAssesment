@@ -1,6 +1,7 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Auth } from '../services/auth';
+import { environment } from '../../../environments/environment';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
  const authService = inject(Auth);
@@ -10,9 +11,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
 
-  const isBackendRequest = req.url.startsWith(
-    'http://localhost:3000/api/'
-  );
+  const isBackendRequest = req.url.startsWith(`${environment.serverUrl}/`);
 
   if (!isBackendRequest) {
     return next(req);

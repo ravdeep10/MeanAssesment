@@ -1,6 +1,7 @@
 import { Service, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 
 export interface Product {
@@ -30,7 +31,7 @@ export interface ProductPayload {
 @Service()
 export class ProductService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:3000/api/products';
+  private readonly apiUrl = `${environment.serverUrl}/products`;
 
   getProducts(): Observable<ProductListResponse> {
     return this.http.get<ProductListResponse>(this.apiUrl);
